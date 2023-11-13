@@ -11,6 +11,7 @@ It's possible to see statistics of win and tie based on the following assumption
 # Try it
 
 You can try the game with statistics here:
+https://adebiasi.github.io/TicTacToeStrategy/
 
 
 # Screenshots
