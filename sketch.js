@@ -4,7 +4,7 @@ let board;
 let currentPlayer = 'X';
 let prev_actions = []
 
-let assumptionTexts = ["No assumptions about the opponents strategy", "We assume the opponents will choose the best move to win", "We assume the opponents will choose the best move to win or tie"];
+let assumptionTexts = ["No assumptions about the opponents strategy", "We assume the opponents will choose the best move to WIN", "We assume the opponents will choose the best move to WIN or TIE"];
 let currAssumption = 0;
 let stats;
 let assumptionButton;
@@ -17,8 +17,6 @@ function extract_stats(prev_actions) {
         for (let i = 0; i < actions.length; i++) {
 
             let curr_action = actions[i]
-            // console.log(curr_action[0])
-            // console.log(curr_action[0].slice(0, prev_actions.length))
 
             if (!equalsCheck(curr_action[0].slice(0, prev_actions.length), prev_actions)) {
                 continue;
@@ -30,12 +28,6 @@ function extract_stats(prev_actions) {
             if (curr_action[1] == 'tie')
                 num_tie += 1;
         }
-        console.log("prev_actions: " + prev_actions)
-
-        console.log("num_p1_wins: " + num_p1_wins)
-        console.log("num_p2_wins: " + num_p2_wins)
-        console.log("num_tie: " + num_tie)
-        console.log("tot: " + num_p1_wins + num_p2_wins + num_tie)
     }
     return [num_p1_wins, num_p2_wins, num_tie];
 }
@@ -56,7 +48,6 @@ function setup() {
 
     loadJSON('actions.json', function (data) {
             actions = data
-            console.log(actions)
             extract_stats(prev_actions);
             noLoop();
             redraw();
@@ -81,9 +72,10 @@ function draw() {
     background(0);
     textAlign(LEFT, LEFT);
     stroke(0)
+    textSize(25);
 
     fill(255, 255, 255);
-    text(assumptionTexts[currAssumption], 0, 10);
+    text(assumptionTexts[currAssumption], 0, 13);
 
     calculateStats()
     draw_grid(width, height)
@@ -102,6 +94,7 @@ function calculateStats() {
                 }
             }
         }
+        //TODO remove duplicated code for currAssumption == 1 and 2
     } else if (currAssumption == 1) {
         let availableMoves = []
         for (let j = 0; j < 3; j++) {
@@ -120,23 +113,31 @@ function calculateStats() {
                     let bestStats = null;
                     let bestTot = null;
                     let best_value = null;
-                    let best_perc = null;
+                    let best_perc_win_tie = null;
+                    let best_perc_win = null;
                     for (let z = 0; z < availableMoves.length; z++) {
                         let currPos = get_pos(i, j);
                         if (currPos != availableMoves[z]) {
                             let currStats = extract_stats([...prev_actions, currPos, availableMoves[z]])
                             let currTot = currStats[0] + currStats[1] + currStats[2]
                             let curr_value = ((currentPlayer == 'X') ? currStats[1] : currStats[0]);
-                            let curr_perc = curr_value / currTot;
-                            if (bestStats == null || curr_perc > best_perc) {
+                            let curr_perc_win_tie = (curr_value + currStats[2]) / currTot;
+                            let curr_perc_win = (curr_value) / currTot;
+                            if (bestStats == null || curr_perc_win > best_perc_win || (curr_perc_win == best_perc_win && (curr_perc_win_tie > best_perc_win_tie))) {
                                 bestStats = currStats;
                                 bestTot = bestStats[0] + bestStats[1] + bestStats[2]
                                 best_value = ((currentPlayer == 'X') ? bestStats[1] : bestStats[0]);
-                                best_perc = best_value / bestTot;
+                                best_perc_win_tie = (best_value + bestStats[2]) / bestTot;
+                                best_perc_win = (best_value) / bestTot;
                             }
                         }
                     }
-                    stats.push(bestStats);
+                    if (bestStats != null) {
+                        stats.push(bestStats);
+                    }else{
+                        //last move case
+                        stats.push(extract_stats([...prev_actions, get_pos(i, j)]));
+                    }
                 } else {
                     stats.push([]);
                 }
@@ -161,23 +162,31 @@ function calculateStats() {
                     let bestStats = null;
                     let bestTot = null;
                     let best_value = null;
-                    let best_perc = null;
+                    let best_perc_win_tie = null;
+                    let best_perc_win = null;
                     for (let z = 0; z < availableMoves.length; z++) {
                         let currPos = get_pos(i, j);
                         if (currPos != availableMoves[z]) {
                             let currStats = extract_stats([...prev_actions, currPos, availableMoves[z]])
                             let currTot = currStats[0] + currStats[1] + currStats[2]
                             let curr_value = ((currentPlayer == 'X') ? currStats[1] : currStats[0]);
-                            let curr_perc = (curr_value + currStats[2]) / currTot;
-                            if (bestStats == null || curr_perc > best_perc) {
+                            let curr_perc_win_tie = (curr_value + currStats[2]) / currTot;
+                            let curr_perc_win = (curr_value) / currTot;
+                            if (bestStats == null || curr_perc_win_tie > best_perc_win_tie || (curr_perc_win_tie == best_perc_win_tie && curr_perc_win > best_perc_win)) {
                                 bestStats = currStats;
                                 bestTot = bestStats[0] + bestStats[1] + bestStats[2]
                                 best_value = ((currentPlayer == 'X') ? bestStats[1] : bestStats[0]);
-                                best_perc = (best_value + bestStats[2])/ bestTot;
+                                best_perc_win_tie = (best_value + bestStats[2]) / bestTot;
+                                best_perc_win = (best_value) / bestTot;
                             }
                         }
                     }
-                    stats.push(bestStats);
+                    if (bestStats != null) {
+                        stats.push(bestStats);
+                    }else{
+                        //last move case
+                        stats.push(extract_stats([...prev_actions, get_pos(i, j)]));
+                    }
                 } else {
                     stats.push([]);
                 }
@@ -221,13 +230,12 @@ function draw_grid(grid_width, grid_height) {
                 line(x + w / 4, y - h / 4, x - w / 4, y + h / 4);
             } else {
                 fill(0);
-                console.log("i: " + i + " j: " + j + " p: " + get_pos(i, j));
                 // let stat = extract_stats([...prev_actions, get_pos(i, j)])
                 let stat = stats[get_pos(i, j) - 1]
                 let tot = stat[0] + stat[1] + stat[2]
                 let curr_value = ((currentPlayer == 'X') ? stat[0] : stat[1]);
                 const percentageWin = "win: " + (curr_value / tot * 100).toFixed(2) + "%";
-                const percentageTie = "win/tie: " + ((curr_value+stat[2]) / tot * 100).toFixed(2) + "%";
+                const percentageTie = "win/tie: " + ((curr_value + stat[2]) / tot * 100).toFixed(2) + "%";
                 stroke(0)
                 if (currentPlayer == 'X') {
                     // stroke(0,255,0)
@@ -237,7 +245,7 @@ function draw_grid(grid_width, grid_height) {
                     fill(255, 0, 0);
                 }
                 textSize(35);
-                text(percentageWin+"\n"+percentageTie, x, y - h / 4);
+                text(percentageWin + "\n" + percentageTie, x, y - h / 4);
                 textSize(20);
                 text("# possible ends\nX: " + stat[0] + "\nO: " + stat[1] + "\ntie: " + stat[2], x, y + h / 4);
             }
@@ -263,13 +271,6 @@ function mousePressed() {
 
 function get_pos(i, j) {
     let pos = 3 * (j) + (i + 1);
-    // console.log("i: "+i+" j: "+j+" p: "+pos);
     return pos;
 }
 
-function keyPressed() {
-    console.log("keyPressed: " + keyCode)
-    if (key === ' ' || keyCode === 32) {
-
-    }
-}
