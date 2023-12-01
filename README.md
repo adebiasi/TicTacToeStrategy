@@ -20,3 +20,9 @@ A game situation with the statistics about different assumptions.
 ![No assumptions](https://github.com/adebiasi/TicTacToeStrategy/blob/main/imgs/stats_no_ass.png)
 ![Win assumption](https://github.com/adebiasi/TicTacToeStrategy/blob/main/imgs/stats_win_ass.png)
 ![Win or tie assumption](https://github.com/adebiasi/TicTacToeStrategy/blob/main/imgs/stats_win_tie_ass.png)
+
+
+# ToDo next
+
+- [ ] New assumption based on score (+1 WIN, 0 TIE, -1 LOSE)
+- [ ] Implement [MinMax algorithm](https://www.geeksforgeeks.org/finding-optimal-move-in-tic-tac-toe-using-minimax-algorithm-in-game-theory/)
