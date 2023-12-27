@@ -24,5 +24,4 @@ A game situation with the statistics about different assumptions.
 
 # ToDo next
 
-- [ ] New assumption based on score (+1 WIN, 0 TIE, -1 LOSE)
-- [ ] Implement [MinMax algorithm](https://www.geeksforgeeks.org/finding-optimal-move-in-tic-tac-toe-using-minimax-algorithm-in-game-theory/)
+- [x] Implement [MinMax algorithm](https://www.geeksforgeeks.org/finding-optimal-move-in-tic-tac-toe-using-minimax-algorithm-in-game-theory/)
