@@ -1,27 +1,39 @@
 # TicTacToeStrategy
 
-The project enable to play Tic-Tac-Toe with some statistics about the possible ends of the game. The information of all the possible ends were computed using python script [extractStats.py](https://github.com/adebiasi/TicTacToeStrategy/blob/main/extractStats.py). The generated [actions.json](https://github.com/adebiasi/TicTacToeStrategy/blob/main/actions.json) file is parsed and used to visualize the statistics during the game in p5js.
+**TicTacToeStrategy** is an interactive Tic-Tac-Toe game that includes real-time statistical insights into potential game outcomes. These insights are based on precomputed data about all possible endgame scenarios, generated using the Python script [`extractStats.py`](https://github.com/adebiasi/TicTacToeStrategy/blob/main/extractStats.py). The resulting file, [`actions.json`](https://github.com/adebiasi/TicTacToeStrategy/blob/main/actions.json), is parsed in a [p5.js](https://p5js.org/) application to visualize strategic statistics during gameplay.
 
-It's possible to see statistics of win and tie based on the following assumptions:
+### Game Assumptions
 
-- No assumptions about the opponents strategy
-- The opponents will choose the best move to WIN
-- The opponents will choose the best move not to LOSE (WIN or TIE)
+The game displays outcome probabilities (win/tie) based on different assumptions about your opponent's strategy:
 
-# Try it
+- **No assumptions** – The opponent makes completely random moves.
+- **Win-seeking opponent** – The opponent always chooses the move that leads to the highest chance of winning.
+- **Win or tie-seeking opponent** – The opponent tries to avoid losing, aiming for a win or at least a tie.
 
-You can try the game with statistics here:
-https://adebiasi.github.io/TicTacToeStrategy/
+---
 
+## 🎮 Try it out
 
-# Screenshots
-A game situation with the statistics about different assumptions.
+Play the game with integrated statistics here:  
+👉 [**TicTacToeStrategy Web App**](https://adebiasi.github.io/TicTacToeStrategy/)
 
+---
+
+## 📸 Screenshots
+
+Here are some examples of in-game statistical visualizations based on different strategic assumptions:
+
+**No assumptions**  
 ![No assumptions](https://github.com/adebiasi/TicTacToeStrategy/blob/main/imgs/stats_no_ass.png)
+
+**Win-seeking assumption**  
 ![Win assumption](https://github.com/adebiasi/TicTacToeStrategy/blob/main/imgs/stats_win_ass.png)
+
+**Win or tie-seeking assumption**  
 ![Win or tie assumption](https://github.com/adebiasi/TicTacToeStrategy/blob/main/imgs/stats_win_tie_ass.png)
 
+---
 
-# ToDo next
+## ✅ To-Do
 
-- [x] Implement [MinMax algorithm](https://www.geeksforgeeks.org/finding-optimal-move-in-tic-tac-toe-using-minimax-algorithm-in-game-theory/)
+- [x] Implement [Minimax algorithm](https://www.geeksforgeeks.org/finding-optimal-move-in-tic-tac-toe-using-minimax-algorithm-in-game-theory/)
